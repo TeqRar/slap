@@ -7,7 +7,7 @@
 | ▓▓▓▓▓\ | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ /    ▓▓| ▓▓  | ▓▓
 | ▓▓ \▓▓\| ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓  | ▓▓/  ▓▓▓▓_| ▓▓  | ▓▓
 | ▓▓  \▓▓\\▓▓    ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  ▓▓    \ ▓▓  | ▓▓
- \▓▓   \▓▓ \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓   \▓▓\▓▓▓▓▓▓▓▓\▓▓   \▓▓                  
+ \▓▓   \▓▓ \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓   \▓▓\▓▓▓▓▓▓▓▓\▓▓   \▓▓
 ]]--
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -15,6 +15,7 @@ local Frame = Instance.new("Frame")
 local title = Instance.new("TextLabel")
 local title2 = Instance.new("TextLabel")
 local Basic = Instance.new("TextButton")
+local Invis = Instance.new("TextButton")
 local pos = Instance.new("TextBox")
 local Infinite = Instance.new("TextButton")
 local Rejoin = Instance.new("TextButton")
@@ -86,12 +87,24 @@ DestroyB.Name = "DestroyB"
 DestroyB.Parent = Frame
 DestroyB.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 DestroyB.BorderSizePixel = 0
-DestroyB.Position = UDim2.new(0.02, 0, 0.31, 0)
+DestroyB.Position = UDim2.new(0.355, 0, 0.31, 0)
 DestroyB.Size = UDim2.new(0, 148, 0, 50)
 DestroyB.Font = Enum.Font.GothamSemibold
 DestroyB.Text = "Destroy Gui"
 DestroyB.TextColor3 = Color3.fromRGB(255, 255, 255)
 DestroyB.TextSize = 20.000
+
+Invis.Name = "Invis"
+Invis.Parent = Frame
+Invis.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Invis.BorderSizePixel = 0
+Invis.Position = UDim2.new(0.02, 0, 0.31, 0)
+Invis.Size = UDim2.new(0, 148, 0, 50)
+Invis.Font = Enum.Font.GothamSemibold
+Invis.TextScaled = true
+Invis.Text = "Invisible Aura(Need Invisible Handle and UnEquip Handle)"
+Invis.TextColor3 = Color3.fromRGB(255, 255, 255)
+Invis.TextSize = 20.000
 
 Infinite.Name = "Infinite"
 Infinite.Parent = Frame
@@ -232,3 +245,51 @@ local function EKBDAEDI_fake_script() -- Destroy.LocalScript
 	end)
 end
 coroutine.wrap(EKBDAEDI_fake_script)()--end
+local function EKBDAEKDI_fake_script() -- Destroy.LocalScript 
+	local script = Instance.new('LocalScript', Invis)
+
+	script.Parent.MouseButton1Down:Connect(function()
+       script.Parent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	   script.Parent.Size = UDim2.new(0, 155, 0, 55)
+       script.Parent.TextColor3 = Color3.fromRGB(0,0,0)
+       wait(.1)
+       local Player = game.Players.LocalPlayer
+       local Character = workspace:FindFirstChild(Player.Name)
+       local part = Instance.new("Part",Character)
+
+       part.Massless = true
+       part.CanCollide = false
+       part.Size = Vector3.new(30,5,30)
+       part.CFrame = Character.HumanoidRootPart.CFrame
+       part.Color = Color3.fromRGB(255, 0, 0)
+       part.Transparency = 0.9
+       local Light = Instance.new("Highlight",part)
+       Light.OutlineColor = Color3.fromRGB(255, 255, 255)
+       Light.FillTransparency = 1
+
+
+       local weld = Instance.new("WeldConstraint",part)
+       weld.Part0 = part
+       weld.Part1 = Character.HumanoidRootPart
+       local FindPlayer = nil
+       game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()
+       script.Parent.Size = UDim2.new(0, 148, 0, 50)
+       script.Parent.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+       script.Parent.TextColor3 = Color3.fromRGB(255,255,255)
+       wait(1)
+       for _,v in pairs(game.Lighting:GetChildren()) do
+          v:Destroy()
+       end
+       part.Transparency = 0.9
+       part.Touched:Connect(function(hit)
+          print("Dokundu")
+            if hit.Parent.Name ~= Player.Name and hit.Parent:FindFirstChild("Humanoid") then
+                print(hit.Parent.Name)
+                FindPlayer = hit.Parent.Name
+                local ohInstance1 = workspace:FindFirstChild(FindPlayer).HumanoidRootPart
+                game:GetService("ReplicatedStorage").GhostHit:FireServer(ohInstance1)
+            end
+        end)
+    end)
+end
+coroutine.wrap(EKBDAEKDI_fake_script)()--end
